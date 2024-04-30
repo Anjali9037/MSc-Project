@@ -113,7 +113,7 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#">Features</a></li>
+                    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                     <li><a href="#">Pricing</a></li>
                     <li><a href="#">Login/Register</a></li>
                     <li><a href="#">Contact</a></li>
@@ -160,8 +160,23 @@
                 <select id="expense_category" name="expense_category" required>
                     <option value="groceries">Groceries</option>
                     <option value="utilities">Utilities</option>
+                    <option value="rent">Rent</option>
+                    <option value="mortgage">Mortgage</option>
+                    <option value="transportation">Transportation</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="insurance">Insurance</option>
+                    <option value="education">Education</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="dining_out">Dining Out</option>
+                    <option value="gifts_donations">Gifts & Donations</option>
+                    <option value="travel">Travel</option>
+                    <option value="personal_care">Personal Care</option>
+                    <option value="home_maintenance">Home Maintenance</option>
+                    <option value="other">Other</option>
                     <!-- Add more options as needed -->
-                </select><br><br>
+                </select>
+                <br><br>
                 <label for="expense_amount">Amount:</label>
                 <input type="number" id="expense_amount" name="expense_amount" required><br><br>
                 <label for="expense_date">Date:</label>

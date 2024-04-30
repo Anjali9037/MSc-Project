@@ -8,5 +8,6 @@ urlpatterns = [
     path('data_addition', views.data_addition, name='data_addition'),
     path('submit_income', views.submit_income, name='submit_income'),
     path('submit_expense', views.submit_expense, name='submit_expense'),
+    path('dashboard', views.dashboard, name='dashboard'),
     
 ]

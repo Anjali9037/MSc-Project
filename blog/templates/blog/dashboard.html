@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker - Dashboard</title>
+    <style>
+        /* Reset CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #fff;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a.active {
+            color: #007bff;
+        }
+
+        /* Overview Section Styles */
+        .overview {
+            margin-bottom: 40px;
+        }
+
+        .overview h2 {
+            margin-bottom: 20px;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-item {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-item h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Graphs/Charts Section Styles */
+        .graphs {
+            margin-bottom: 40px;
+        }
+
+        .graphs h2 {
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 30px 0;
+        }
+
+        footer nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        footer nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        footer nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .social-icons a {
+            margin-right: 10px;
+        }
+
+        .social-icons img {
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="logo.png" alt="Expense Tracker Logo">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'dashboard' %}" class="active">Dashboard</a></li>
+                    <li><a href="#">Add Income</a></li>
+                    <li><a href="#">Add Expense</a></li>
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#">Settings</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Overview Section -->
+        <section class="overview">
+            <h2>Overview</h2>
+            <div class="summary">
+                <div class="summary-item">
+                    <h3>Total Income</h3>
+                    <p id="total-income">Loading...</p>
+                </div>
+                <div class="summary-item">
+                    <h3>Total Expenses</h3>
+                    <p id="total-expenses">Loading...</p>
+                </div>
+                <div class="summary-item">
+                    <h3>Net Savings</h3>
+                    <p id="net-savings">Loading...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Graphs/Charts Section -->
+        <section class="graphs">
+            <h2>Income vs. Expenses Over Time</h2>
+            <div class="chart-container">
+                <!-- Bar Chart -->
+                <canvas id="bar-chart"></canvas>
+                <br><br>
+                <!-- Line Chart -->
+                <canvas id="line-chart"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </nav>
+            <div class="social-icons">
+                <a href="#"><img src="facebook-icon.png" alt="Facebook"></a>
+                <a href="#"><img src="twitter-icon.png" alt="Twitter"></a>
+                <!-- Add more social media icons as needed -->
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Load data from Django template variables
+    var totalIncome = parseFloat(document.getElementById('total-income').textContent);
+    var totalExpenses = parseFloat(document.getElementById('total-expenses').textContent);
+    var netSavings = parseFloat(document.getElementById('net-savings').textContent);
+
+    // Function to create charts
+    function createCharts() {
+        // Chart.js code to create charts using the data
+        // For demonstration purposes, using example data
+        var labels = ['January', 'February', 'March', 'April', 'May']; // Example labels (months)
+        var incomeData = [500, 700, 900, 1200, 1000]; // Example income data
+        var expenseData = [400, 600, 800, 1100, 900]; // Example expense data
+
+        // Bar Chart
+        var ctxBar = document.getElementById('bar-chart').getContext('2d');
+        var barChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Income',
+                    data: incomeData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                }, {
+                    label: 'Expenses',
+                    data: expenseData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    xAxes: [{
+                        stacked: true,
+                        gridLines: {
+                            display: false
+                        }
+                    }],
+                    yAxes: [{
+                        stacked: true,
+                        gridLines: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }]
+                }
+            }
+        });
+
+        // // Line Chart
+        // var ctxLine = document.getElementById('line-chart').getContext('2d');
+        // var lineChart = new Chart(ctxLine, {
+        //     type: 'line',
+        //     data: {
+        //         labels: labels,
+        //         datasets: [{
+        //             label: 'Income',
+        //             data: incomeData,
+        //             borderColor: 'rgba(54, 162, 235, 0.6)',
+        //             fill: false
+        //         }, {
+        //             label: 'Expenses',
+        //             data: expenseData,
+        //             borderColor: 'rgba(255, 99, 132, 0.6)',
+        //             fill: false
+        //         }]
+        //     },
+        //     options: {
+        //         responsive: true,
+        //         maintainAspectRatio: false,
+        //         scales: {
+        //             xAxes: [{
+        //                 gridLines: {
+        //                     display: false
+        //                 }
+        //             }],
+        //             yAxes: [{
+        //                 gridLines: {
+        //                     color: 'rgba(0, 0, 0, 0.1)'
+        //                 }
+        //             }]
+        //         }
+        //     }
+        // });
+    }
+
+    // Call the function to create charts after data is loaded
+    createCharts();
+</script>
+</body>
+</html>

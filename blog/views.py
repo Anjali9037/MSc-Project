@@ -74,3 +74,27 @@ def submit_expense(request):
         return HttpResponse("Expense submitted successfully!")
     else:
         return HttpResponse("Invalid request method!")
+    
+
+
+    from django.shortcuts import render
+
+def dashboard(request):
+
+    income_df = pd.read_csv("income.csv")
+    expense_df = pd.read_csv("expense.csv")
+    # Assume functions to calculate total income, total expenses, and net savings
+    total_income = income_df.Amount.sum() 
+    total_expenses = expense_df.Amount.sum() 
+    net_savings = total_income - total_expenses
+    
+    # Pass the data to the template
+    context = {
+        'total_income': total_income,
+        'total_expenses': total_expenses,
+        'net_savings': net_savings,
+        # You can add more data here as needed for charts/graphs
+    }
+    
+    return render(request, 'blog/dashboard.html', context)
+
