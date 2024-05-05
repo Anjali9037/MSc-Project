@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
+import json
 
 
 
@@ -84,18 +85,69 @@ def dashboard(request):
     
     income_df = pd.read_csv("income.csv")
     print(income_df)
+
+
+    income_df['income_date'] = pd.to_datetime(income_df['income_date'])
+
+    # Extract month and year from 'income_date'
+    income_df['month_year'] = income_df['income_date'].dt.strftime('%B %Y')
+
+    # Group by month and year, and calculate the sum of 'Amount'
+    monthly_income = income_df.groupby('month_year')['Amount'].sum().reset_index()
+
+    
+
+    
     expense_df = pd.read_csv("expense.csv")
     print(expense_df)
+
+    # Convert 'Date' column to datetime format
+    expense_df['Date'] = pd.to_datetime(expense_df['Date'])
+
+    # Extract month and year from 'Date'
+    expense_df['month_year'] = expense_df['Date'].dt.strftime('%B %Y')
+
+    # Group by month and year, and calculate the sum of 'Amount'
+    monthly_expenses = expense_df.groupby('month_year')['Amount'].sum().reset_index()
+
+    monthly_data = pd.merge(monthly_income, monthly_expenses, on='month_year', suffixes=('_income', '_expense'))
+    print(monthly_data)
+    monthly_data["net_savings"] = monthly_data.Amount_income - monthly_data.Amount_expense
+
+    income_list = list(monthly_data.Amount_income)
+    expense_list = list(monthly_data.Amount_expense)
+    month_list = list(monthly_data.month_year)
+    net_savings_list  = list(monthly_data.net_savings)
+
+    income_list_json = json.dumps(income_list)
+    expense_list_json = json.dumps(expense_list)
+    month_list_json = json.dumps(month_list)
+    net_savings_list_json = json.dumps(net_savings_list)
+
+    # Group expenses by category and calculate total amount for each category
+    expense_category_data = expense_df.groupby('Category')['Amount'].sum().reset_index()
+
+    # Convert the expense category data to JSON
+    expense_category_data_json = expense_category_data.to_json(orient='records')
+    print(expense_category_data_json)
+
     # Assume functions to calculate total income, total expenses, and net savings
-    total_income = income_df.Amount.sum() 
-    total_expenses = expense_df.Amount.sum() 
-    net_savings = total_income - total_expenses
+    # total_income = income_df.Amount.sum() 
+    # total_expenses = expense_df.Amount.sum() 
+    # net_savings = total_income - total_expenses
     
     # Pass the data to the template
     context = {
-        'total_income': total_income,
-        'total_expenses': total_expenses,
-        'net_savings': net_savings,
+        'total_income': income_list[-1],
+        'total_expenses': expense_list[-1],
+        'net_savings': net_savings_list[-1],
+        'latest_month':month_list[-1],
+        'income_list':income_list_json,
+        'expense_list':expense_list_json,
+        'month_list':month_list_json,
+        'net_savings_list':net_savings_list_json,
+        'expense_category_data_json':expense_category_data_json,
+
         # You can add more data here as needed for charts/graphs
     }
     

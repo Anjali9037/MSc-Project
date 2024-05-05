@@ -138,7 +138,7 @@
                 <ul>
                     <li><a href="{% url 'dashboard' %}" class="active">Dashboard</a></li>
                     <li><a href="#">Add Income</a></li>
-                    <li><a href="#">Add Expense</a></li>
+                    <li><a href="{% url 'data_addition' %}">Add Expense</a></li>
                     <li><a href="#">Reports</a></li>
                     <li><a href="#">Settings</a></li>
                 </ul>
@@ -152,6 +152,10 @@
         <section class="overview">
             <h2>Overview</h2>
             <div class="summary">
+                <div class="summary-item">
+                    <h3>Month</h3>
+                    <p id="month">{{latest_month}}</p>
+                </div>
                 <div class="summary-item">
                     <h3>Total Income</h3>
                     <p id="total-income">{{total_income}}</p>
@@ -169,13 +173,20 @@
 
         <!-- Graphs/Charts Section -->
         <section class="graphs">
-            <h2>Income vs. Expenses Over Time</h2>
+            <h2>Income vs. Expenses Over Months</h2>
             <div class="chart-container">
                 <!-- Bar Chart -->
-                <canvas id="bar-chart" height="500"></canvas>
+                <canvas id="bar-chart" height="600"></canvas>
                 <br><br>
                 <!-- Line Chart -->
                 <canvas id="line-chart"></canvas>
+                
+            </div>
+
+            <h2>Expense Category Split</h2>
+            <div >
+                <canvas id="expense-pie-chart" width="400" height="400"></canvas>
+                
             </div>
         </section>
     </div>
@@ -197,17 +208,21 @@
             </div>
         </div>
     </footer>
-    <div id="total-income" style="display: none;">{{ total_income }}</div>
-    <div id="total-expenses" style="display: none;">{{ total_expenses }}</div>
-    <div id="net-savings" style="display: none;">{{ net_savings }}</div>
+    <div id="income-list" style="display: none;">{{ income_list }}</div>
+    <div id="expense_list" style="display: none;">{{ expense_list }}</div>
+    <div id="net_savings_list" style="display: none;">{{ net_savings_list }}</div>
+    <div id="month_list" style="display: none;">{{ month_list }}</div>
 
     <!-- JavaScript for Charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Load data from Django template variables
-    var totalIncome = parseFloat(document.getElementById('total-income').textContent);
-    var totalExpenses = parseFloat(document.getElementById('total-expenses').textContent);
-    var netSavings = parseFloat(document.getElementById('net-savings').textContent);
+    var totalIncome = JSON.parse(document.getElementById('income-list').textContent);
+    var totalExpenses =JSON.parse(document.getElementById('expense_list').textContent);
+    var netSavings = JSON.parse(document.getElementById('net_savings_list').textContent);
+    var months = JSON.parse(document.getElementById('month_list').textContent);
+
+    console.log("income", totalIncome)
 
     // Function to create charts
     function createCharts() {
@@ -222,16 +237,22 @@
         var barChart = new Chart(ctxBar, {
             type: 'bar',
             data: {
-                labels: ['April'],
+                labels: months,
                 datasets: [{
                     label: 'Income',
-                    data: [totalIncome],
+                    data: totalIncome,
                     backgroundColor: 'rgba(54, 162, 235, 0.6)'}
                 , {
                     label: 'Expenses',
-                    data: [totalExpenses],
+                    data: totalExpenses,
                     backgroundColor: 'rgba(255, 99, 132, 0.6)'
-                }
+                },
+                {
+                    label: 'Savings',
+                    data: netSavings,
+                    backgroundColor: 'rgba(152, 251, 152, 1)'
+
+                },
             ]
             },
             options: {
@@ -253,46 +274,47 @@
                 }
             }   
         });
-
-        // // Line Chart
-        // var ctxLine = document.getElementById('line-chart').getContext('2d');
-        // var lineChart = new Chart(ctxLine, {
-        //     type: 'line',
-        //     data: {
-        //         labels: labels,
-        //         datasets: [{
-        //             label: 'Income',
-        //             data: incomeData,
-        //             borderColor: 'rgba(54, 162, 235, 0.6)',
-        //             fill: false
-        //         }, {
-        //             label: 'Expenses',
-        //             data: expenseData,
-        //             borderColor: 'rgba(255, 99, 132, 0.6)',
-        //             fill: false
-        //         }]
-        //     },
-        //     options: {
-        //         responsive: true,
-        //         maintainAspectRatio: false,
-        //         scales: {
-        //             xAxes: [{
-        //                 gridLines: {
-        //                     display: false
-        //                 }
-        //             }],
-        //             yAxes: [{
-        //                 gridLines: {
-        //                     color: 'rgba(0, 0, 0, 0.1)'
-        //                 }
-        //             }]
-        //         }
-        //     }
-        // });
     }
 
     // Call the function to create charts after data is loaded
     createCharts();
+
+    // Load expense category data from Django template variable
+    var expenseCategoryData = JSON.parse('{{ expense_category_data_json | escapejs }}');
+    console.log("expenseCategoryData", expenseCategoryData)
+
+    // Function to create the pie chart
+    function createPieChart() {
+        var ctx = document.getElementById('expense-pie-chart').getContext('2d');
+        var expensePieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: expenseCategoryData.map(item => item.Category),
+                datasets: [{
+                    label: 'Expense Categories',
+                    data: expenseCategoryData.map(item => item.Amount),
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        // Add more colors as needed...
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'right',
+                },
+            }
+        });
+    }
+
+    // Call the function to create the pie chart
+    createPieChart();
 </script>
 </body>
 </html>
