@@ -154,15 +154,15 @@
             <div class="summary">
                 <div class="summary-item">
                     <h3>Total Income</h3>
-                    <p id="total-income">Loading...</p>
+                    <p id="total-income">{{total_income}}</p>
                 </div>
                 <div class="summary-item">
                     <h3>Total Expenses</h3>
-                    <p id="total-expenses">Loading...</p>
+                    <p id="total-expenses">{{total_expenses}}</p>
                 </div>
                 <div class="summary-item">
                     <h3>Net Savings</h3>
-                    <p id="net-savings">Loading...</p>
+                    <p id="net-savings">{{net_savings}}</p>
                 </div>
             </div>
         </section>
@@ -172,7 +172,7 @@
             <h2>Income vs. Expenses Over Time</h2>
             <div class="chart-container">
                 <!-- Bar Chart -->
-                <canvas id="bar-chart"></canvas>
+                <canvas id="bar-chart" height="500"></canvas>
                 <br><br>
                 <!-- Line Chart -->
                 <canvas id="line-chart"></canvas>
@@ -197,6 +197,9 @@
             </div>
         </div>
     </footer>
+    <div id="total-income" style="display: none;">{{ total_income }}</div>
+    <div id="total-expenses" style="display: none;">{{ total_expenses }}</div>
+    <div id="net-savings" style="display: none;">{{ net_savings }}</div>
 
     <!-- JavaScript for Charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -211,7 +214,7 @@
         // Chart.js code to create charts using the data
         // For demonstration purposes, using example data
         var labels = ['January', 'February', 'March', 'April', 'May']; // Example labels (months)
-        var incomeData = [500, 700, 900, 1200, 1000]; // Example income data
+        var incomeData = [500, 500, 500, 500, 500]; // Example income data
         var expenseData = [400, 600, 800, 1100, 900]; // Example expense data
 
         // Bar Chart
@@ -219,19 +222,20 @@
         var barChart = new Chart(ctxBar, {
             type: 'bar',
             data: {
-                labels: labels,
+                labels: ['April'],
                 datasets: [{
                     label: 'Income',
-                    data: incomeData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
-                }, {
+                    data: [totalIncome],
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)'}
+                , {
                     label: 'Expenses',
-                    data: expenseData,
+                    data: [totalExpenses],
                     backgroundColor: 'rgba(255, 99, 132, 0.6)'
-                }]
+                }
+            ]
             },
             options: {
-                responsive: true,
+                responsive: false,
                 maintainAspectRatio: false,
                 scales: {
                     xAxes: [{
@@ -247,7 +251,7 @@
                         }
                     }]
                 }
-            }
+            }   
         });
 
         // // Line Chart

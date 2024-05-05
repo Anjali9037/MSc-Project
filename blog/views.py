@@ -34,15 +34,15 @@ def submit_income(request):
         income_source = request.POST['income_source']
         income_amount = request.POST['income_amount']
         income_frequency = request.POST['income_frequency']
-        
+        income_date = request.POST['income_date']
         # Load existing data or create a new DataFrame if the file doesn't exist
         try:
             income_df = pd.read_csv('income.csv')
         except FileNotFoundError:
-            income_df = pd.DataFrame(columns=['Source', 'Amount', 'Frequency'])
+            income_df = pd.DataFrame(columns=['Source', 'Amount', 'Frequency','income_date'])
         
         # Append new data to the DataFrame
-        new_row = {'Source': income_source, 'Amount': income_amount, 'Frequency': income_frequency}
+        new_row = {'Source': income_source, 'Amount': income_amount, 'Frequency': income_frequency, 'income_date':income_date}
         income_df = income_df.append(new_row, ignore_index=True)
         
         # Save the DataFrame back to CSV
@@ -81,8 +81,11 @@ def submit_expense(request):
 
 def dashboard(request):
 
+    
     income_df = pd.read_csv("income.csv")
+    print(income_df)
     expense_df = pd.read_csv("expense.csv")
+    print(expense_df)
     # Assume functions to calculate total income, total expenses, and net savings
     total_income = income_df.Amount.sum() 
     total_expenses = expense_df.Amount.sum() 
