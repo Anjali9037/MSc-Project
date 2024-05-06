@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Setting</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="text-center mb-5">Budget Setting</h1>
+
+    <form id="budgetForm">
+        <div class="form-group">
+            <label for="categorySelect">Select Category:</label>
+            <select class="form-control" id="categorySelect">
+                <option value="groceries">Groceries</option>
+                <option value="utilities">Utilities</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="transportation">Transportation</option>
+                <option value="dining">Dining</option>
+                <option value="clothing">Clothing</option>
+                <option value="healthcare">Healthcare</option>
+                <option value="education">Education</option>
+                <option value="travel">Travel</option>
+                <option value="housing">Housing</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="budgetValue">Set Budget Value:</label>
+            <input type="number" class="form-control" id="budgetValue" placeholder="Enter budget value">
+        </div>
+        <button type="button" class="btn btn-primary" onclick="saveBudget()">Save Budget</button>
+    </form>
+</div>
+
+<script>
+    function saveBudget() {
+        var category = document.getElementById('categorySelect').value;
+        var budget = document.getElementById('budgetValue').value;
+
+        // Send AJAX request to save budget
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'save_budget');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert(JSON.parse(xhr.responseText).message);
+            }
+        };
+        xhr.send(JSON.stringify({category: category, budget: budget}));
+    }
+</script>
+
+</body>
+</html>

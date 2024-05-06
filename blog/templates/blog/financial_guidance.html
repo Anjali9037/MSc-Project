@@ -1,0 +1,87 @@
+<!-- financial_guidance.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Guidance</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tip-icon {
+            font-size: 36px;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #343a40;
+            font-weight: bold;
+        }
+
+        p {
+            color: #6c757d;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="text-center mb-5">Financial Guidance</h1>
+
+    {% if guidance_messages %}
+        {% for message in guidance_messages %}
+            <div class="card">
+                <div class="d-flex justify-content-center align-items-center tip-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h2 class="text-center">Tip</h2>
+                <p>{{ message }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            No financial guidance available at the moment. Check back later.
+        </div>
+    {% endif %}
+</div>
+
+<div class="footer">
+    <p>&copy; 2024 Financial Guidance. All rights reserved.</p>
+</div>
+
+</body>
+</html>

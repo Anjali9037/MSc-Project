@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 import json
+from django.http import JsonResponse
 
 
 
@@ -153,3 +154,89 @@ def dashboard(request):
     
     return render(request, 'blog/dashboard.html', context)
 
+# views.py
+
+
+
+def calculate_financial_guidance(income_df, expense_df):
+    guidance_messages = []
+
+    # Rule 1: Income vs. Expense Analysis
+    total_income = income_df['Amount'].sum()
+    total_expenses = expense_df['Amount'].sum()
+    if total_expenses > 0.3 * total_income:
+        guidance_messages.append("Your expenses are exceeding 30% of your income. Review your spending habits.")
+
+    # Rule 2: Budgeting Tips
+    if expense_df[expense_df['Category'] == 'groceries']['Amount'].sum() > 0.1 * total_income:
+        guidance_messages.append("Consider allocating some of your grocery budget to savings or investments.")
+    if expense_df[expense_df['Category'] == 'utilities']['Amount'].sum() > 0.15 * total_income:
+        guidance_messages.append("Try reducing utility expenses by conserving energy and water.")
+    if expense_df[expense_df['Category'] == 'rent']['Amount'].sum() > 0.05 * total_income:
+        guidance_messages.append("Explore options to reduce rent expenses, such as negotiating with the landlord.")
+
+    # Rule 3: Emergency Fund
+    monthly_expenses = expense_df.groupby('Date')['Amount'].sum().mean()
+    if not (3 * monthly_expenses <= total_income):
+        guidance_messages.append("Establish an emergency fund equivalent to at least three months' worth of expenses.")
+
+    # Rule 4: Debt Management
+    high_interest_debt = expense_df[expense_df['Category'] == 'Debt']['Amount'].sum()
+    if high_interest_debt > 0.2 * total_income:
+        guidance_messages.append("Prioritize paying off high-interest debts to reduce financial burden.")
+    
+    # Rule 5: Savings and Investments
+    net_savings = total_income - total_expenses
+    if net_savings > 0:
+        guidance_messages.append("Consider investing a portion of your savings in low-cost index funds or retirement accounts.")
+    else:
+        guidance_messages.append("Create a budget to track expenses closely and identify areas for potential savings.")
+
+    # Rule 6: Financial Goals
+    specific_goals = ['Buy a home', 'Save for a vacation']  # Example goals
+    for goal in specific_goals:
+        guidance_messages.append(f"Here are some tips to achieve your goal of '{goal}': [Tips here]")
+
+    # Rule 7: Regular Financial Check-ins
+    guidance_messages.append("Remember to review your finances regularly to track progress towards your goals.")
+
+    return guidance_messages
+
+def financial_guidance_view(request):
+    # Load income and expense data from CSV files
+    income_df = pd.read_csv('income.csv')
+    expense_df = pd.read_csv('expense.csv')
+
+    # Calculate financial guidance messages
+    guidance_messages = calculate_financial_guidance(income_df, expense_df)
+
+    # Pass guidance messages to the template for rendering
+    context = {'guidance_messages': guidance_messages}
+    return render(request, 'blog/financial_guidance.html', context)
+
+
+def budget_setting(request):
+    return render(request, 'blog/budget_setting.html')
+
+@csrf_exempt
+def save_budget(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        category = data['category']
+        budget = data['budget']
+
+        # Read existing budget data from CSV file
+        try:
+            budget_df = pd.read_csv('budget.csv')
+        except FileNotFoundError:
+            budget_df = pd.DataFrame()
+
+        # Update budget value for the selected category
+        budget_df.at[0, category] = budget
+
+        # Write DataFrame back to CSV file
+        budget_df.to_csv('budget.csv', index=False)
+
+        return JsonResponse({'message': 'Budget saved successfully!'})
+
+    return JsonResponse({'message': 'Invalid request method.'})
