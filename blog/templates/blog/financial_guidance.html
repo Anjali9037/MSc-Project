@@ -15,7 +15,7 @@
         }
 
         .container {
-            margin-top: 50px;
+            margin-top: 90px;
         }
 
         .card {
@@ -55,9 +55,78 @@
             text-align: center;
             color: #6c757d;
         }
+        header {
+            background-color: #fff;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .container {
+            width: 100%; /* Ensure the container spans the full width */
+            max-width: 1200px; /* Limit the maximum width of the container */
+            margin: 0 auto; /* Center the container horizontally */
+        }       
+        .header-btn {
+            padding: 10px 20px;
+            border: 2px solid #000;
+            border-radius: 5px;
+            background-color: transparent;
+            color: #000;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .header-btn:hover {
+            background-color: #000;
+            color: #fff;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0; /* Reset margin */
+            padding: 0; /* Reset padding */
+        }
+
+        nav ul li {
+            display: inline-block; /* Display list items horizontally */
+            margin-right: 20px; /* Adjust spacing between list items */
+        }
+
+        nav ul li:last-child {
+            margin-right: 0; /* Remove margin from the last list item */
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #007bff;
+        }
     </style>
 </head>
 <body>
+    <header>
+        <div class="container">
+            <div class="website-name">Budget Buddy</div>
+            <div class="logo">
+                <img src="data:image/jpeg;base64,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" alt="Expense Tracker Logo" style="width: 50px; height: auto;">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'blog-home' %}" class="header-btn">Home</a></li>
+                    <li><a href="{% url 'dashboard' %}" class="header-btn">Dashboard</a></li>
+                    <li><a href="{% url 'data_addition' %}" class="header-btn">Add Income & Expenses</a></li>
+                    <li><a href="{% url 'budget_setting' %}" class="header-btn">Set Budget</a></li>
+                    <li><a href="{% url 'financial_guidance_view' %}" class="header-btn">Financial Guidance</a></li>
+                    <li><a href="{% url 'logout' %}" class="header-btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
 
 <div class="container">
     <h1 class="text-center mb-5">Financial Guidance</h1>
