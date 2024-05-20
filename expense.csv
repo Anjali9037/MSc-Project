@@ -1,23 +1,25 @@
-Category,Amount,Date
-groceries,560,2024-04-08
-utilities,55,2024-04-08
-groceries,55,2024-04-24
-groceries,460,2024-05-02
-utilities,95,2024-05-03
-groceries,55,2024-05-05
-rent,2000,2024-05-02
-groceries,25,2024-03-22
-travel,200,2024-05-22
-entertainment,67,2024-05-09
-clothing,90,2024-05-07
-groceries,34,2024-05-01
-groceries,34,2024-05-01
-mortgage,12,2024-05-09
-mortgage,12,2024-05-09
-mortgage,12,2024-05-09
-mortgage,12,2024-05-09
-healthcare,200,2024-05-01
-other,70,2024-05-02
-entertainment,50,2024-05-03
-education,800,2024-05-08
-transportation,50,2024-05-10
+Category,Amount,Date,username
+groceries,560,2024-04-08, Anjalikrishna
+utilities,55,2024-04-08, abcdef
+groceries,55,2024-04-24, Anjalikrishna
+groceries,460,2024-05-02, abcdef
+utilities,95,2024-05-03, Anjalikrishna
+groceries,55,2024-05-05, abcdef
+rent,2000,2024-05-02, Anjalikrishna
+groceries,25,2024-03-22, abcdef
+travel,200,2024-05-22, Anjalikrishna
+entertainment,67,2024-05-09, abcdef
+clothing,90,2024-05-07, Anjalikrishna
+groceries,34,2024-05-01, abcdef
+groceries,34,2024-05-01, Anjalikrishna
+mortgage,12,2024-05-09, abcdef
+mortgage,12,2024-05-09,Anjalikrishna
+mortgage,12,2024-05-09,abcdef
+mortgage,12,2024-05-09,Anjalikrishna
+healthcare,200,2024-05-01,abcdef
+other,70,2024-05-02,abcdef
+entertainment,50,2024-05-03,Anjalikrishna
+education,800,2024-05-08,abcdef
+transportation,50,2024-05-10, Anjalikrishna
+groceries,2500,2024-05-14,Anjalikrishna
+dining_out,400,2024-05-15,Anjalikrishna

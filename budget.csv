@@ -1,5 +1,9 @@
-Category,Budget
-rent,2000
-entertainment,100
-healthcare,200
-groceries,600
+Category,Budget,username
+rent,2000,Anjalikrishna
+entertainment,100,Anjalikrishna
+healthcare,200,Anjalikrishna
+groceries,600,Anjalikrishna
+dining,200,Anjalikrishna
+dining_out,300,Anjalikrishna
+groceries,100,abcdef
+rent,1000,abcdef

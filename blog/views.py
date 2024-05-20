@@ -13,6 +13,18 @@ from django.core.mail import send_mail
 from django.conf import settings
 from twilio.rest import Client
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+
+@login_required
+def some_function(request):
+    # Access the username of the authenticated user
+    username = request.user.username
+
+    # Now you can use the username as needed in your code
+    print(username)  # Example usage
+
+
 # Your Twilio Account SID and Auth Token
 account_sid = 'ACdae963df4752fa397fd157c06d4fee47'
 auth_token = 'ec84d8890dcfca2518cb9b5849b5890d'
@@ -42,6 +54,7 @@ def data_addition(request):
 
 
 def submit_income(request):
+    username = request.user.username
     if request.method == 'POST':
         income_source = request.POST['income_source']
         income_amount = request.POST['income_amount']
@@ -51,10 +64,10 @@ def submit_income(request):
         try:
             income_df = pd.read_csv('income.csv')
         except FileNotFoundError:
-            income_df = pd.DataFrame(columns=['Source', 'Amount', 'Frequency','income_date'])
+            income_df = pd.DataFrame(columns=['Source', 'Amount', 'Frequency','income_date','username'])
         
         # Append new data to the DataFrame
-        new_row = {'Source': income_source, 'Amount': income_amount, 'Frequency': income_frequency, 'income_date':income_date}
+        new_row = {'Source': income_source, 'Amount': income_amount, 'Frequency': income_frequency, 'income_date':income_date, 'username':username}
         income_df = income_df.append(new_row, ignore_index=True)
         
         # Save the DataFrame back to CSV
@@ -65,6 +78,7 @@ def submit_income(request):
         return HttpResponse("Invalid request method!")
 
 def submit_expense(request):
+    username = request.user.username
     if request.method == 'POST':
         expense_category = request.POST['expense_category']
         expense_amount = request.POST['expense_amount']
@@ -74,10 +88,10 @@ def submit_expense(request):
         try:
             expense_df = pd.read_csv('expense.csv')
         except FileNotFoundError:
-            expense_df = pd.DataFrame(columns=['Category', 'Amount', 'Date'])
+            expense_df = pd.DataFrame(columns=['Category', 'Amount', 'Date','usernaame'])
         
         # Append new data to the DataFrame
-        new_row = {'Category': expense_category, 'Amount': expense_amount, 'Date': expense_date}
+        new_row = {'Category': expense_category, 'Amount': expense_amount, 'Date': expense_date,'username':username}
         expense_df = expense_df.append(new_row, ignore_index=True)
         
         # Save the DataFrame back to CSV
@@ -93,10 +107,12 @@ def submit_expense(request):
 
 def dashboard(request):
 
-    
+    username = request.user.username
+    print(username,type(username))
     income_df = pd.read_csv("income.csv")
+    print(list(income_df.username))
+    income_df = income_df[income_df["username"].str.strip()==username]
     print(income_df)
-
 
     income_df['income_date'] = pd.to_datetime(income_df['income_date'])
 
@@ -110,7 +126,7 @@ def dashboard(request):
 
     
     expense_df = pd.read_csv("expense.csv")
-    print(expense_df)
+    expense_df = expense_df[expense_df["username"].str.strip()==username]
 
     # Convert 'Date' column to datetime format
     expense_df['Date'] = pd.to_datetime(expense_df['Date'])
@@ -261,8 +277,11 @@ def calculate_financial_guidance(income_df, expense_df):
 
 def financial_guidance_view(request):
     # Load income and expense data from CSV files
+    username = request.user.username
     income_df = pd.read_csv('income.csv')
+    income_df=income_df[income_df.username.str.strip() ==username]
     expense_df = pd.read_csv('expense.csv')
+    expense_df=expense_df[expense_df.username.str.strip() ==username]
 
     # Calculate financial guidance messages
     guidance_messages = calculate_financial_guidance(income_df, expense_df)
@@ -286,17 +305,21 @@ def financial_guidance_view(request):
 
 def budget_setting(request):
     # Read budget data
+    username = request.user.username
     try:
         budget_df = pd.read_csv('budget.csv')
     except FileNotFoundError:
-        budget_df = pd.DataFrame(columns=['Category', 'Budget'])
+        budget_df = pd.DataFrame(columns=['Category', 'Budget','username'])
 
     # Read expense data
     try:
         expense_df = pd.read_csv('expense.csv')
     except FileNotFoundError:
-        expense_df = pd.DataFrame(columns=['Category', 'Amount', 'Date'])
+        expense_df = pd.DataFrame(columns=['Category', 'Amount', 'Date','username'])
 
+    budget_df= budget_df[budget_df.username.str.strip()==username]
+    expense_df= expense_df[expense_df.username.str.strip()==username]
+    
     expense_df['Date'] = pd.to_datetime(expense_df['Date'])
 
 # Get the latest month and year from the DataFrame
@@ -357,10 +380,13 @@ def send_sms(recipient_number, message_body):
 
 @csrf_exempt
 def save_budget(request):
+    username = request.user.username
     if request.method == 'POST':
         data = request.POST
         category = data['category']
         budget = data['budget']
+        
+
 
         # Read existing budget data from CSV file
         try:
@@ -368,12 +394,15 @@ def save_budget(request):
         except FileNotFoundError:
             budget_df = pd.DataFrame()
 
+        # budget_df= budget_df[budget_df.username.str.strip() ==username]
         # Update budget value for the selected category
         new_row = budget_df.head(1)
         new_row["Category"]=category
         new_row["Budget"]=budget
+        new_row["username"]=username
         budget_df=budget_df.append(new_row)
-        budget_df=budget_df.drop_duplicates(subset=['Category'],keep='last')
+        print(budget_df)
+        budget_df=budget_df.drop_duplicates(subset=['username','Category'],keep='last')
 
         # Write DataFrame back to CSV file
         budget_df.to_csv('budget.csv', index=False)

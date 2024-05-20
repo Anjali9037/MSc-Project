@@ -1,7 +1,8 @@
-Source,Amount,Frequency,income_date
-salary,1500,monthly, 2024-04-01
-salary,1600,monthly, 2024-05-01
-stocks,3000,monthly,2024-05-01
-stocks,1000,monthly,2024-05-02
-salary,10000,monthly,2024-05-03
-salary,23,monthly,2024-05-01
+Source,Amount,Frequency,income_date,username
+salary,1500,monthly, 2024-04-01, Anjalikrishna
+salary,1600,monthly, 2024-05-01, Anjalikrishna
+stocks,3000,monthly,2024-05-01, Anjalikrishna
+stocks,1000,monthly,2024-05-02,abcdef
+salary,10000,monthly,2024-05-03, Anjalikrishna
+salary,23,monthly,2024-05-01, abcdef
+stocks,120,monthly,2024-05-08,Anjalikrishna
